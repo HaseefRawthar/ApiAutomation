@@ -1,0 +1,307 @@
+{
+	"info": {
+		"_postman_id": "2e7a586a-aecb-402d-9e89-8d05f918fa36",
+		"name": "testing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "New Folder",
+			"item": [
+				{
+					"name": "https://restful-booker.herokuapp.com/auth",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"eval(pm.environment.get(\"Test\"))();"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\" : \"{{username}}\",\n    \"password\" : \"{{password}}\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/auth",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"auth"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "https://restful-booker.herokuapp.com/booking",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/booking",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"booking"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "https://restful-booker.herokuapp.com/booking",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var body = pm.response.json();\r",
+									"pm.environment.set(\"id\",body.booking.firstname);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstname\" : \"Jim\",\n    \"lastname\" : \"Brown\",\n    \"totalprice\" : 111,\n    \"depositpaid\" : true,\n    \"bookingdates\" : {\n        \"checkin\" : \"2018-01-01\",\n        \"checkout\" : \"2019-01-01\"\n    },\n    \"additionalneeds\" : \"Breakfast\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/booking",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"booking"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "https://restful-booker.herokuapp.com/booking/1",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Cookie",
+								"value": "token=abc123"
+							},
+							{
+								"key": "Authorisation",
+								"value": "YWRtaW46cGFzc3dvcmQxMjM=]",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstname\" : \"James\",\n    \"lastname\" : \"Brown\",\n    \"totalprice\" : 111,\n    \"depositpaid\" : true,\n    \"bookingdates\" : {\n        \"checkin\" : \"2018-01-01\",\n        \"checkout\" : \"2019-01-01\"\n    },\n    \"additionalneeds\" : \"Breakfast\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/booking/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"booking",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create passenger",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"eval(pm.environment.get(\"Test\"))();"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var random =parseInt(Math.random()*1000)\r",
+									"pm.environment.set(\"PassengerName\",\"\"+random)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"John Doe{{PassengerName}}\",\r\n    \"trips\": 250,\r\n    \"airline\": 5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.instantwebtools.net/v1/passenger",
+							"protocol": "https",
+							"host": [
+								"api",
+								"instantwebtools",
+								"net"
+							],
+							"path": [
+								"v1",
+								"passenger"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create airlines",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var random =parseInt(Math.random()*1000)\r",
+									"pm.environment.set(\"randomId\",random)\r",
+									"const result = Math.random().toString(36).substring(2,7);\r",
+									"pm.environment.set(\"website\",\"www.\"+result+random+\".com\")"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Response time is less than 1200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1200);\r",
+									"});\r",
+									"pm.test(\"Your test name\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.name).to.eql(\"Sri Lankan Airways\");\r",
+									"});\r",
+									"pm.test(\"Your test Id\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.id).to.eql(pm.environment.get(\"randomId\"));\r",
+									"});\r",
+									"pm.test(\"Your test website\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.website).to.eql(pm.environment.get(\"website\"));\r",
+									"});\r",
+									"console.log(pm.environment.get(\"randomId\"))\r",
+									"console.log(pm.environment.get(\"website\"))"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": {{randomId}},\r\n    \"name\": \"Sri Lankan Airways\",\r\n    \"country\": \"Sri Lanka\",\r\n    \"logo\": \"https://upload.wikimedia.org/wikipedia/en/thumb/9/9b/Qatar_Airways_Logo.svg/sri_lanka.png\",\r\n    \"slogan\": \"From Sri Lanka\",\r\n    \"head_quaters\": \"Katunayake, Sri Lanka\",\r\n    \"website\": \"{{website}}\",\r\n    \"established\": \"1990\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.instantwebtools.net/v1/airlines",
+							"protocol": "https",
+							"host": [
+								"api",
+								"instantwebtools",
+								"net"
+							],
+							"path": [
+								"v1",
+								"airlines"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var commonTest = () => {",
+							"",
+							"",
+							"",
+							"    pm.test(\"Response time is less than 500ms\", function () {",
+							"",
+							"        pm.expect(pm.response.responseTime).to.be.below(500);",
+							"",
+							"    });",
+							"",
+							"    pm.test(\"Successful POST request\", function () {",
+							"",
+							"        pm.expect(pm.response.code).to.be.oneOf([200,201, 202]);",
+							"",
+							"    });",
+							"",
+							"} ",
+							"",
+							"pm.environment.set(\"Test\",commonTest.toString())"
+						]
+					}
+				}
+			]
+		}
+	]
+}
